@@ -1,0 +1,60 @@
+---
+title: "R Notebook"
+output:
+  html_document:
+    df_print: paged
+---
+
+###정규분포
+###qnorm()
+
+```{r}
+qnorm(
+  (1-0.2), # 확률면적 - 상위 20% 지점의 점수를 구함
+  mean = 68.4,#구하고자 하는 과목의 평균
+  sd = 4.9 #구하고자 하는 과목의 표준편차
+  )
+# [1] 72.52394
+```
+
+###과목별 점수 데이터 생성
+```{r}
+var.score <- data.frame(
+  subject <- c("국어","영어","수학","과학","사회"),
+  score <- c(75,80,92,77,90),
+  subject_mean <- c(75,80,92,77,90),
+  subject_sd <- c(4.9,11.2,2.9,9.8,5.2), 
+  stringAsFactors=F #과목명이 FACTOR로 바뀌는 것을 막음
+)
+var.score
+```
+
+###과목별 점수 상위 20% 이내인 점수 구하기
+```{r}
+var.score[,"upper_20"] <- qnorm( #상위 20%의 컬럼을 생성
+  (1-0.2),
+  mean=var.score$subject_mean,
+  sd=var.score$subject_sd
+)
+var.score
+```
+
+###과목별 점수 데이터 20% 이내인 지 체크
+```{r}
+var.score[,"check_upper_20"] ="FAIL"
+var.score[var.score$score > var.score$upper_20,
+          "check_upper_20"] ="SUCCESS"
+## 앞의 조건을 만족한다면, 이 열에 해당하는 값을 변경해라
+nrow(var.score[var.score$check_upper_20=="SUCCESS",])
+
+```
+
+
+
+
+
+
+
+
+
+

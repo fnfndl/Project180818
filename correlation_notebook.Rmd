@@ -1,0 +1,63 @@
+---
+title: "R Notebook"
+output:
+  html_document:
+    df_print: paged
+---
+
+#상관관계
+#두 집단 사이의 관계를 양/음의 관계의 선형차트로 표헌
+
+#양의 상관관계
+```{r}
+
+library(ggplot2)
+var.cor <- data.frame(
+  grp_1 <- c(1:50),
+  grp_2 <- c(1:50)
+)
+cor(
+  var.cor$grp_1,var.cor$grp_2
+)
+```
+
+#음의 상관관계
+```{r}
+var.cor <- data.frame(
+  grp_1 <- c(1:50),
+  grp_2 <- c(50:1)
+)
+cor(
+  var.cor$grp_1,var.cor$grp_2
+) 
+```
+
+###(예제)허리둘레와 패스트푸드와의 관계
+```{r}
+set.seed(165) #165개의 랜덤 수를 만듬
+var.weist <- sample(seq(28,33,by=0.01),size=100) #28부터33까지 0.01 간격으로 100가지 숫자를 만듬
+var.weist <- var.weist[order(var.weist)] #오름 차순으로 정렬
+set.seed(165)
+var.fastfood <- sample(c(0,0,1),size=100,replace = T)
+var.corr <- data.frame(
+  var.days <- c(1:100),
+  var.weist,
+  var.fastfood
+)
+var.corr[,"var.ff_cumsum"] <- cumsum( #var.ff_cumsum 누적값을 추가
+  var.corr$var.fastfood
+) 
+
+ggplot(data = var.corr
+       )+geom_line(aes(x=var.days,y=var.weist),color="#FFA500",size=1.3
+                   )+geom_line(aes(x=var.days,y=var.ff_cumsum),color="#00A0FF",size=1.3 #차트 하나에 레이어로 겹쳐서 표
+                               )+theme(axis.text = element_text(size=13),
+                                       axis.text.x = element_text(size=16,face = "bold"),
+                                       axis.text.y = element_blank())
+
+cor(
+  var.corr$var.weist,
+  var.corr$var.ff_cumsum
+)
+"[1] 0.975454"
+```

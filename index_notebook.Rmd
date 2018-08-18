@@ -1,0 +1,14 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+####INDEX
+[연속형 데이터 그래프](file:///C:/R/Project180818/stats_notebook_geometric.html)
+[상관관계](file:///C:/R/Project180818/correlation_notebook.html)
+[정규분포](file:///C:/R/Project180818/norm_notebook.html)
+
+```{r}
+plot(cars)
+```
+

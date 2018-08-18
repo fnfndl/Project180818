@@ -1,0 +1,124 @@
+---
+title: "R Notebook"
+output:
+  html_document:
+    df_print: paged
+---
+
+#연속형 데이터 그래프
+
+```{r}
+
+library(ggplot2)
+set.seed(1228) #해당 숫자를 기준으로 랜덤 숫자
+var.rand <- data.frame(
+  obs <- 1:20, #관측치의 약자
+  val <- sample(
+    1:10,
+    size =20,
+    replace=T
+  )
+)
+var.rand
+
+ggplot(
+  data=var.rand,
+  aes(x=obs,y=val)
+)+geom_point()
+```
+
+#### 점 확대
+```{r}
+ggplot(
+  data=var.rand, 
+  )+geom_point(aes(x=obs,y=val),color="blue", size=5)
+```
+
+####선으로 연결
+```{r}
+set.seed(1228) #해당 숫자를 기준으로 랜덤 숫자
+
+var.rand <- data.frame(
+  obs <- 1:20, #관측치의 약자
+  val <- sample(
+    1:10,
+    size =20,
+    replace=T
+  )
+)
+var.rand
+
+ggplot(
+  data=var.rand,
+)+geom_line(aes(x=obs,y=val))
+```
+
+####선&두께 
+```{r}
+ggplot(
+  data=var.rand,
+)+geom_line(aes(x=obs,y=val),color="red",size=5)
+```
+
+#### 선&포인트 혼합
+```{r}
+dfDemo1 <- data.frame(aa=1:10, bb=10:1)
+dfDemo2 <- data.frame(cc=1:10, dd=1:10)
+ggplot(
+  data = dfDemo2,
+  aes(x=cc, y=dd)
+)+ geom_col(data=dfDemo1,
+            aes(x=aa,y=bb))+
+  geom_point(size=5)+
+  geom_line(size=1.5)+
+  geom_point(size=3,
+             color="#FFFFFF")
+```
+
+# 데카르트방식 : plot(x,y)
+# 수식기반 : plot(y~x)
+## plot()
+# plot(y축 data, option)
+# plot( c(1,2,3,4,5))
+
+
+option
+main = " [ main title ] "   
+sub = " [ sub title ] "  
+xlab = " [x axis text ] ", ylab = " [ y axis text ] "  
+ann = F  -- x, y 축 no title
+tmag = 2 -- 문자 확대율
+axes = F  -- hide x,y axis 
+axis   -- show x,y axis -
+## Graph Type Selection 
+type = "p"  -- 점 , default
+type = "l"  -- 선
+type = "b" -- 점과 선
+type = "c"  -- b 에서 점 생략
+type = "o" -- 점과 선을 중첩
+type = "h" -- 점에서 x축까지 수직선 그래프
+type = "s"  -- 왼쪽값을 기초로 계단모양으로 연결한 그래프
+type = "n"  -- 축 만 그리고 그래프는 없음
+## Line Type
+lty = 0, lty = "blank"  -- 투명선
+lty = 1, lty = "solid" -- 실선
+lty = 2, lty = "dashed" -- 대쉬선
+lty = 3, lty = "dotted" -- 점선
+lty = 4, lty = "dotdash" -- 점선과 대쉬선
+lty = 5, lty = "longdash" -- 긴 대쉬선
+lty = 6, lty = "twodash" -- 2개의 대쉬선
+## Color, Symbol
+col = 1, col = "blue" -- 기호 색지정
+     1. black
+     2. red
+     3. green
+     4. blue
+     5. sky
+     6. purple
+     7. yellow
+     8. gray
+pch = 0, pch = "[character]" -- 점의 모양
+bg = "blue" -- 그래프 배경색
+lwd = "[number]" -- 선의 굵기
+cex = "[number]" -- 점이나 문자의 굵기
+

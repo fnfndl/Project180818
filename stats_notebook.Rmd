@@ -1,0 +1,239 @@
+---
+title: "R Notebook"
+output:
+  html_document:
+    df_print: paged
+---
+대표값 
+평균값 mean()  
+중앙값 median()  
+분산 var()  
+표준편차 sd()  
+
+```{r}
+
+library(ggplot2)
+var.score <- c(85,90,93,86,82)
+# 평균값 mean()
+mean(var.score)
+# 중앙값 median()
+median(var.score)
+# 분산 var()
+var(var.score)
+# 표준편차 sd()
+sd(var.score)
+```
+
+#나이 분석 예제
+```{r}
+(var.age <- c(19,20,20,30,32,33,45,40,60,50,
+              54,25,35,44,46,70,80,24,22,11,
+              66,15,22,8,6,9,24,24,26,40)
+ )
+length(var.age) #몇개의 케이스가 있는 지 확인 
+var.target <- cut(var.age,
+                  breaks = c(0,10,20,30,40,50,Inf))
+## default : 이상~미만
+## right = F : 초과~이하
+var.target
+table(var.target)
+## 구간별로 빈도수 계산
+data.frame(table(var.target))
+```
+
+#임금분석 예제
+###step1.데이터 로딩
+```{r}
+var.csv <- "https://www.dropbox.com/s/mawf3fo98336iua/example_salary.csv?dl=1"
+var.salary <- read.csv(
+  var.csv,
+  stringsAsFactors = T, ##대표값으로 바뀌지 않게 STRING 값으로 유지
+  na = "-" #결측값은 "-"로 변경
+)
+```
+
+###step2.데이터프레임 생성
+```{r}
+head(var.salary)
+colnames(var.salary) <- c(
+  "age","salary","special salary", "workinghour", "number of worker", "career", "gender"
+)
+str(var.salary)
+# 변수명 참고
+# 'data.frame':	100 obs. of  7 variables:
+#  $ age             : Factor w/ 10 levels "-19","20-24",..: 1 2 3 4 5 6 7 8 9 10 ...
+#  $ salary          : num  1346534 1584214 1922043 2130988 2414345 ...
+#  $ special salary  : num  151840 115375 268058 335710 352816 ...
+#  $ workinghour     : num  170 180 178 181 181 ...
+#  $ number of worker: num  15042 74251 143338 103585 65385 ...
+#  $ career          : Factor w/ 5 levels "1~3년미만","10년이상",..: 3 3 3 3 3 3 3 3 3 3 ...
+#  $ gender          : Factor w/ 2 levels "남","여": 1 1 1 1 1 1 1 1 1 1 ...
+```
+
+###step3.검색 목록에 데이터프레임 로딩
+detach(var.salary) ## 기존 var.salary라는 검색목록이 있다면 삭제
+attach(var.salary) ## 지금 내가 만든 변수로 대체
+
+###step4.대표값_평균 구하기
+```{r}
+var.mean <- mean(var.salary$salary, na.rm = T) 
+var.mean
+# [1] 2171578
+#var.salary 데이터 프레임 안의 salary 변수만 평균을 구함 mean(salary)만 입력하여도 무관
+#na.rm = T 결측값이 있다면 삭제해라는 뜻
+```
+평균월급 : ￦2,171,578
+
+###step5.대표값_중앙값 구하기
+```{r}
+var.median <- median(var.salary$salary, na.rm = T)
+var.median
+# [1] 2120345
+```
+임금 중앙값 : ￦2,120,345
+임금 평균과 중앙값의 차이가 거의 없기 때문에 outlier가 없고, 한 쪽으로 치우쳐있지 않음
+
+###step6.임금의 범위 구하기 
+```{r}
+var.range <- range(var.salary$salary, na.rm = T)
+var.range
+# [1] 1117605 4064286
+# range : min, max 값을 보여줌
+```
+최저임금: ￦1,117,605, 최고임금: ￦4,064,286
+
+```{r}
+var.lowest <- which(var.salary$salary==1117605)
+#which 조건에 해당하는 
+var.lowest
+# [1] 60
+var.highest <- which(var.salary$salary==4064286)
+var.highest
+# [1] 48
+```
+최저 임금 수령자 상세내역
+연령 : 60세
+월급 : 
+보너스 : 
+경력 : 
+성별 : 
+최고 임금 수령자 상세내역
+연령 : 48세
+월급 : 
+보너스 : 
+경력 : 
+성별 : 
+
+###step7. 사분위 구하기
+```{r}
+var.qnt <- quantile(var.salary$salary, na.rm = T)
+var.qnt
+#      0%     25%     50%     75%    100% 
+# 1117605 1689658 2120345 2519221 4064286
+```
+
+###step8. 리스트 구하기
+```{r}
+var.list <- list(
+  평균월급 = var.mean,
+  월급중앙값 = var.median,
+  월급범위 = var.range,
+  월급사분위 = var.qnt
+)
+var.list
+# $`평균월급`
+# [1] 2171578
+# 
+# $월급중앙값
+# [1] 2120345
+# 
+# $월급범위
+# [1] 1117605 4064286
+# 
+# $월급사분위
+#      0%     25%     50%     75%    100% 
+# 1117605 1689658 2120345 2519221 4064286 
+```
+
+###step9. 성별 임금격차 확인하기
+```{r}
+var.gender_sal <- tapply(var.salary$salary , var.salary$gender, mean, na.rm = T)
+#tapply :
+# salary : 대상이 되는 변량, gender: 구분이 되는 변량, mean: 함수 
+var.gender_sal
+#      남      여 
+# 2477332 1865823 
+```
+남성평균임금 : 2477332, 여성평균임금 : 1865823
+
+###step10. 그래프로 표현하기
+```{r}
+install.packages("reshape2")
+install.packages("ggplot2")
+library(reshape2)
+library(ggplot2)
+
+var.melt <- melt(var.gender_sal) #표에 녹인다는 뜻
+var.melt #X축과 Y축 이름 확인 
+
+ggplot(
+  var.melt,
+  aes(
+    x= Var1,
+    y= value,
+    fill=Var1
+    )
+  )+geom_bar(stat = "identity") #상태는 막대그래프
+```
+
+###step11. 표준편차 구하기
+```{r}
+var.gender_sal_range <- tapply(var.salary$salary , var.salary$gender, range, na.rm = T)
+var.gender_sal_range
+# $`남`
+# [1] 1346534 4064286
+# $여
+# [1] 1117605 3002440
+
+var.gender_sal_sd <- tapply(var.salary$salary , var.salary$gender, sd, na.rm = T)
+var.gender_sal_sd
+#       남       여 
+# 646470.7 468270.6 
+```
+
+###step12.경력별 임금 평균
+```{r}
+var.career <- tapply(var.salary$salary, var.salary$career, mean, na.rm=T)
+var.career
+ # 1~3년미만   10년이상    1년미만  3~5년미만 5~10년미만 
+ #   1905012    2907119    1730835    2028015    2360463 
+```
+
+###step13. 관계도 차트로 표현
+```{r}
+
+var.melt <- melt(var.career)
+ggplot(
+  var.melt,
+    aes(x=Var1,
+        y= value,
+        group = 1
+        )
+)+geom_line(
+  color= 'skyblue2',
+  size=2,
+)+coord_polar()+
+  ylim(0,max(var.melt$value))
+```
+
+
+
+
+
+
+
+
+
+
+
+
